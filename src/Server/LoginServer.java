@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class LoginServer extends Thread {
-    private int port;
+    private final int port;
 
     public LoginServer(int port) {
         this.port = port;
