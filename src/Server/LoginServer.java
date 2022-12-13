@@ -185,7 +185,7 @@ public class LoginServer extends Thread {
             String nickName = Select.Login(new ConnectDB(), id, pwd);
             // 데이터베이스에서 탐색
 
-            if (!(nickName.equals("") && nickName.equals(null))) {
+            if (!nickName.isEmpty()) {
                 System.out.println(Util.createLogString("Login", socket.getInetAddress().getHostAddress(), "Login Success"));
 
                 HashMap<String, Object> loginResponse = new HashMap<String, Object>();
@@ -195,15 +195,6 @@ public class LoginServer extends Thread {
 
                 serverOutput.println(Util.createJSON(200, loginResponse));
                 // 클라이언트에게 결과 전송
-
-                try {
-                    serverInput.close();
-                    serverOutput.close();
-                    socket.close();
-                    // 로그인 서버 소켓 연결 종료
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
             } // 성공적으로 로그인한 경우
             else {
                 System.out.println(Util.createLogString("Login", socket.getInetAddress().getHostAddress(), "Login Failed"));
