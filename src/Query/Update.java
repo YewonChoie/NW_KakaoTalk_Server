@@ -39,38 +39,4 @@ public class Update {
             e.printStackTrace();
         }
     }
-
-    public static void UpdateFollow(Connection con, String user, String otherUser, boolean TorF) {
-        PreparedStatement pstmt = null;
-
-        try {
-            String sql = "update " + user + " set following = ? where nickname = ?";
-            pstmt = con.prepareStatement(sql);
-
-            //pstmt.setString(1, user);
-            pstmt.setBoolean(1, TorF);
-            pstmt.setString(2, otherUser);
-
-            int count = pstmt.executeUpdate();
-
-            pstmt.close();
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            String sql = "update " + otherUser + " set follower = ? where nickname = ?";
-            pstmt = con.prepareStatement(sql);
-
-            //pstmt.setString(1, otherUser);
-            pstmt.setBoolean(1, TorF);
-            pstmt.setString(2, user);
-
-            int count = pstmt.executeUpdate();
-
-            pstmt.close();
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }

@@ -24,8 +24,10 @@ public class ConnectDB {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String url = "jdbc:mysql://localhost/kakaotalk";
             String user = "root", passwd = "1217";
+            // 데이터베이스 정보
 
             con = DriverManager.getConnection(url, user, passwd);
+            // 데이터베이스 연결
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {

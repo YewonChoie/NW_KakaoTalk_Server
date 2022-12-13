@@ -9,8 +9,7 @@ public class Main {
         LoginServer loginServer = new LoginServer(loginServerPort);
         MainServer mainServer = new MainServer(MainServerPort);
 
-
-        loginServer.start();
-        mainServer.start();
+        loginServer.start(); // 로그인 서버 시작
+        mainServer.start(); // 메인 서버 시작
     }
 }
