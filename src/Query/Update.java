@@ -35,6 +35,7 @@ public class Update {
             int count = pstmt.executeUpdate();
 
             pstmt.close();
+            connectDB.Disconnect();
         } catch(SQLException e) {
             e.printStackTrace();
         }

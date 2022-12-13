@@ -1,6 +1,7 @@
 package Server;
 
 import Query.ConnectDB;
+import Query.Delete;
 import Query.Select;
 import User.User;
 import Utilization.Util;
@@ -67,13 +68,16 @@ public class MainServer extends Thread {
 
                         switch (requestCode) {
                             case 3001:
-                                userProcess(client);
+                                UserProcess(client);
                                 break;
                                 // 유저 정보 가져오기 프로세스
                             case 3002:
-                                searchUserProcess(client);
+                                SearchUserProcess(client);
                                 break;
                                 // 유저 검색 프로세스
+                            case 3003:
+                                LogoutProcess(client);
+                                break;
                             default:
                                 break;
                         }
@@ -84,7 +88,7 @@ public class MainServer extends Thread {
             }
         }
 
-        private void userProcess(JSONObject clientJSON) {
+        private void UserProcess(JSONObject clientJSON) {
             System.out.println(Util.createLogString("Main", socket.getInetAddress().getHostAddress(), "User Request"));
 
             String user = String.valueOf(clientJSON.get("user"));
@@ -99,23 +103,27 @@ public class MainServer extends Thread {
             // 클라이언트에게 결과 전송
         } // 유저 정보 가져오기 프로세스
 
-        private void searchUserProcess(JSONObject clientJSON) {
+        private void SearchUserProcess(JSONObject clientJSON) {
             System.out.println(Util.createLogString("Main", socket.getInetAddress().getHostAddress(), "Search User Request"));
 
             String user = String.valueOf(clientJSON.get("user"));
             String search = String.valueOf(clientJSON.get("search"));
             System.out.println(search);
+
             ArrayList<User> searchedUser = Select.SearchUser(new ConnectDB(), user, search);
             // 데이터베이스에서 탐색
 
             if (searchedUser.size() != 0) {
                 HashMap<String, Object> searchResponse = new HashMap<String, Object>();
                 String searched = new String(searchedUser.get(0).getNickName());
+                String message = new String(searchedUser.get(0).getMessage());
                 for (int i = 1; i < searchedUser.size(); i++) {
                     searched = searched + "," + searchedUser.get(i).getNickName();
+                    message = message + "," + searchedUser.get(i).getMessage();
                 }
                 searchResponse.put("search", "true");
                 searchResponse.put("searched", searched);
+                searchResponse.put("message", message);
                 // 클라이언트에게 전송할 유저 닉네임 저장
 
                 serverOutput.println(Util.createJSON(200, searchResponse));
@@ -130,5 +138,22 @@ public class MainServer extends Thread {
                 // 클라이언트에게 결과 전송
             } // 검색된 유저가 없는 경우
         } // 유저 검색 프로세스
+
+        private void LogoutProcess(JSONObject clientJSON) {
+            System.out.println(Util.createLogString("Main", socket.getInetAddress().getHostAddress(), "Logout Request"));
+
+            String user = String.valueOf(clientJSON.get("logout"));
+            System.out.println(user);
+
+            boolean isSuccess = Delete.Logout(new ConnectDB(), user);
+            // 데이터베이스에서 삭제 및 업데이트
+
+            if (isSuccess == true) {
+                serverOutput.println(Util.createSingleJSON(200, "logout", "true"));
+            } // 로그아웃에 성공한 경우
+            else {
+                serverOutput.println((Util.createSingleJSON(200, "logout", "false")));
+            } // 로그아웃에 실패한 경우
+        } // 로그아웃 프로세스
     }
 }

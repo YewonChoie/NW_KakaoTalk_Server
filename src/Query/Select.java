@@ -154,7 +154,7 @@ public class Select {
         ArrayList<User> searched = new ArrayList<User>();
 
         try {
-            String sql = "select nickname from userinfo where nickname like ? and nickname != ?";
+            String sql = "select nickname, message from userinfo where nickname like ? and nickname != ?";
             pstmt = connectDB.getCon().prepareStatement(sql);
 
             pstmt.setString(1, "%" + nickName + "%");
@@ -164,6 +164,7 @@ public class Select {
             while (rs.next()) {
                 User newUser = new User();
                 newUser.setNickName(rs.getString("nickname"));
+                newUser.setMessage(rs.getString("message"));
                 System.out.println(newUser.getNickName());
                 searched.add(newUser);
             }

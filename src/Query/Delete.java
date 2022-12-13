@@ -5,11 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class Delete {
-    public static void Logout(ConnectDB connectDB, String nickname) {
+    public static boolean Logout(ConnectDB connectDB, String nickname) {
         PreparedStatement pstmt = null;
+        boolean isSuccess = false;
 
         try {
-            String sql = "delete from logined where nickname = ?";
+            String sql = "delete from loggedin where nickname = ?";
             pstmt = connectDB.getCon().prepareStatement(sql);
 
             pstmt.setString(1, nickname);
@@ -17,11 +18,14 @@ public class Delete {
             int count = pstmt.executeUpdate();
 
             Update.UpdateLogoutTime(connectDB, nickname);
+            isSuccess = true;
 
             pstmt.close();
         } catch(SQLException e) {
             e.printStackTrace();
         }
+
+        return isSuccess;
     }
 
     public static void DeleteFollow(Connection con, String user, String otherUser) {
